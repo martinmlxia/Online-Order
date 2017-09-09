@@ -1,0 +1,19 @@
+/* CSS Document */
+#cancel {
+	border: none;
+}
+
+#register {
+	border: none;
+}
+
+#enter {
+	border: none
+}
+
+#login_font {
+	font-family: verdana, "ËÎÌו", arial, sans-serif;
+	font-size: 16px;
+	font-weight: bold;
+	color: #ffffff;
+}

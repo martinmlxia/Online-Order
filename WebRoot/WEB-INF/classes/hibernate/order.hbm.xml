@@ -1,0 +1,1070 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+
+	<!-- modify by Martin begin -->
+	
+	<class name="com.conant.order.vo.UserInfo" table="user_user">
+		<id name="user_id" length="15" column="user_id">		
+		</id>
+		<property name="saleOwner" length="15" />
+		<property name="productOwner" length="15" />
+		<property name="user_code" length="6" />
+		<property name="user_tag" length="15" />
+		<property name="user_name" length="50" />
+		<property name="user_passwd" length="32" />
+		<property name="email" length="25" />
+		<property name="address" length="150" />
+		<property name="home_tel" length="50" />
+		<property name="mobile" length="50" />
+		<property name="login_ip" length="15" />
+		<property name="login_time" length="19" />
+		<property name="add_date" length="19" />
+		<property name="add_userid" length="10" />
+		<property name="upd_date" length="19" />
+		<property name="upd_userid" length="10" />
+		<property name="lock_flag" length="1" />
+		<property name="limit_date" length="28" />
+		<property name="limit_time" length="2" />
+		<property name="limit_ip" length="2" />
+		<property name="is_admin" length="1" />
+		<property name="is_login" length="1" />
+		<property name="del_flag" length="1" />
+		<property name="is_audit" length="1" />
+		<property name="businessName" length="200" />
+		<property name="businessStreetNumber" length="100" />
+		<property name="businessStreetName" length="100" />
+		<property name="businessSuit" length="100" />
+		<property name="businessCity" length="50" />
+		<property name="businessState" length="50" />
+		<property name="businessCountry" length="100" />
+		<property name="businessZip" length="50" />
+		<property name="businessPhone" length="50" />
+		<property name="businessExt" length="20" />
+		<property name="businessFax" length="50" />
+		<property name="businessType" length="20" />
+		<property name="lastName" length="50" />
+	</class>
+
+	<class name="com.conant.order.vo.UserDeptInfo" table="user_dept_pk">
+		<id name="user_id" length="15" column="user_id">
+		</id>
+		<property name="dept_id" length="15" />
+		<property name="add_date" length="19" />
+		<property name="add_userid" length="10" />
+		<property name="upd_date" length="19" />
+		<property name="upd_userid" length="10" />
+		<property name="del_flag" length="1" />
+	</class>
+	
+	<class name="com.conant.order.vo.UserRoleInfo" table="user_role_pk">
+		<id name="user_id" length="15" column="user_id">
+		</id>
+		<property name="role_id" length="10" />
+		<property name="add_date" length="19" />
+		<property name="add_userid" length="10" />
+		<property name="upd_date" length="19" />
+		<property name="upd_userid" length="10" />	
+	</class>
+	
+	<class name="com.conant.order.vo.FunctionInfo" table="Ord_Function">
+		<id name="id" type="long" column="ID">
+			<generator class="native" />
+		</id>
+		<property name="func_Name" length="20" />
+		<property name="func_Pid" type="long" column="PID" />
+		<property name="func_URL" length="200" />
+		<property name="func_Type" length="2" />
+		<property name="func_Desc" length="200" />
+	</class>
+	
+	<!-- modify by Martin end -->
+	
+	<!-- added on 2008-11-20 22:00 OrsOrder -->
+	<class name="com.conant.order.vo.OrsOrder" table="ors_order"
+		dynamic-insert="true" dynamic-update="true">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="exist" type="java.lang.Integer">
+			<column name="exist" default="1">
+				<comment>mark of existence</comment>
+			</column>
+		</property>
+		<property name="ordertype" type="java.lang.Integer">
+			<column name="ordertype" not-null="true">
+				<comment>order type</comment>
+			</column>
+		</property>
+		<!--
+		<property name="ordernumber" type="string">
+			<column name="ordernumber" unique="true" not-null="true">
+				<comment>order number</comment>
+			</column>
+		</property>
+		-->
+		<!-- removed on 2009-08-19 20:59 by agang
+		<property name="clientname" type="string">
+			<column length="45" name="clientname" not-null="true">
+				<comment>client name</comment>
+			</column>
+		</property>
+		 -->
+		<many-to-one class="com.conant.order.vo.UserInfo"
+			fetch="select" name="user" lazy="proxy">
+			<column name="userid">
+				<comment>user id</comment>
+			</column>
+		</many-to-one>
+		<property name="telephone" type="string">
+			<column length="45" name="telephone">
+				<comment>telephone or fax no</comment>
+			</column>
+		</property>
+		<property name="ordereddate" type="timestamp">
+			<column length="19" name="ordereddate" not-null="true">
+				<comment>ordered date</comment>
+			</column>
+		</property>
+		<property name="referenceno" type="string">
+			<column length="45" name="referenceno">
+				<comment>reference no</comment>
+			</column>
+		</property>
+		<!--
+		<property name="courier" type="string">
+			<column length="45" name="courier">
+				<comment>courier</comment>
+			</column>
+		</property>
+		<property name="couriercode" type="string">
+			<column length="45" name="couriercode">
+				<comment>couriers code</comment>
+			</column>
+		</property>
+		-->
+		<!-- added on 2009-06-14 15:20 -->
+		<many-to-one class="com.conant.order.vo.Couriers" fetch="select"
+			name="couriers" lazy="proxy">
+			<column name="couriers">
+				<comment>couriers</comment>
+			</column>
+		</many-to-one>
+		<property name="shipmentTrackingNumber" type="string">
+			<column length="80" name="shipmentTrackingNumber">
+				<comment>shipment tracking number</comment>
+			</column>
+		</property>
+		<property name="remarks" type="string">
+			<column length="200" name="remarks">
+				<comment>remarks</comment>
+			</column>
+		</property>
+		<one-to-one cascade="all" class="com.conant.order.vo.LensDetail"
+			name="lensdetail" lazy="proxy" />
+		<one-to-one cascade="all" class="com.conant.order.vo.FrameDetail"
+			name="framedetail" lazy="proxy" />
+		<many-to-one cascade="all" class="com.conant.order.vo.ProcessInstance"
+			name="processInstance" unique="true" lazy="proxy">
+			<column name="processId" not-null="true">
+				<comment>the id of process instance</comment>
+			</column>
+		</many-to-one>
+		<!-- added on 2009-01-15 22:35 -->
+		<property name="emergent" type="java.lang.Boolean">
+			<column name="emergent" not-null="true" default="0">
+				<comment>emergent or not</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-17 21:12 -->
+		<property name="patient" type="string">
+			<column length="80" name="patient">
+				<comment>patient name</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-17 21:12 -->
+		<property name="tray" type="string">
+			<column length="80" name="tray">
+				<comment>patient tray</comment>
+			</column>
+		</property>
+		<!-- added on 2009-05-14 22:45 -->
+		<property name="patientAddress" type="string">
+			<column length="200" name="patientAddress">
+				<comment>patient address</comment>
+			</column>
+		</property>
+		<property name="price" type="java.lang.Float">
+		     <column name="price" />
+		</property>
+		<property name="invoiceid" type="string">
+		     <column name="invoiceid" />
+		</property>
+	</class>
+	
+	<!-- added on 2008-11-20 22:00 LensDetail -->
+	<class name="com.conant.order.vo.LensDetail" table="ors_lens_detail">
+		<id column="id" name="id">
+			<generator class="foreign">
+				<param name="property">orsorder</param>
+			</generator>
+		</id>
+		<property name="tframe" type="java.lang.String">
+		    <column name="tframe" />
+		</property>
+		<one-to-one class="com.conant.order.vo.OrsOrder"
+			constrained="true" name="orsorder" />
+		<!-- 
+			- removed on 2009-02-23 23:14
+			- use material type and lens type instead
+			<many-to-one class="com.conant.order.vo.LensModel" fetch="select"
+				name="lensmodel" lazy="proxy">
+				<column name="modelid" not-null="true">
+					<comment>the model id of lens</comment>
+				</column>
+			</many-to-one>
+		-->
+		<property name="diameter" type="java.lang.Integer">
+			<column name="diameter">
+				<comment>diameter of lens</comment>
+			</column>
+		</property>
+		<property name="diameterUnit" type="java.lang.Integer">
+			<column name="diameterUnit">
+				<comment>diameter unit of lens</comment>
+			</column>
+		</property>
+		<property name="rsphere" type="java.lang.Float">
+			<column name="rsphere" precision="12" scale="0">
+				<comment>sphere of right lens</comment>
+			</column>
+		</property>
+		<property name="lsphere" type="java.lang.Float">
+			<column name="lsphere" precision="12" scale="0">
+				<comment>sphere of left lens</comment>
+			</column>
+		</property>
+		<property name="rcylinder" type="java.lang.Float">
+			<column name="rcylinder" precision="12" scale="0">
+				<comment>cylinder of right lens</comment>
+			</column>
+		</property>
+		<property name="lcylinder" type="java.lang.Float">
+			<column name="lcylinder" precision="12" scale="0">
+				<comment>cylinder of left lens</comment>
+			</column>
+		</property>
+		<property name="radd" type="java.lang.Float">
+			<column name="radd" precision="12" scale="0">
+				<comment>add of right lens</comment>
+			</column>
+		</property>
+		<property name="ladd" type="java.lang.Float">
+			<column name="ladd" precision="12" scale="0">
+				<comment>add of left lens</comment>
+			</column>
+		</property>
+		<property name="raxis" type="java.lang.Integer">
+			<column name="raxis">
+				<comment>axis of right lens</comment>
+			</column>
+		</property>
+		<property name="laxis" type="java.lang.Integer">
+			<column name="laxis">
+				<comment>axis of left lens</comment>
+			</column>
+		</property>
+		<property name="rvpd" type="java.lang.Integer">
+			<column name="rvpd">
+				<comment>vertical prism direction of right lens</comment>
+			</column>
+		</property>
+		<property name="lvpd" type="java.lang.Integer">
+			<column name="lvpd">
+				<comment>vertical prism direction of left lens</comment>
+			</column>
+		</property>
+		<property name="rvprism" type="java.lang.Float">
+			<column name="rvprism" precision="12" scale="0">
+				<comment>vertical prism of right lens</comment>
+			</column>
+		</property>
+		<property name="lvprism" type="java.lang.Float">
+			<column name="lvprism" precision="12" scale="0">
+				<comment>vertical prism of left lens</comment>
+			</column>
+		</property>
+		<property name="rhpd" type="java.lang.Integer">
+			<column name="rhpd">
+				<comment>horizontal prism direction of right lens</comment>
+			</column>
+		</property>
+		<property name="lhpd" type="java.lang.Integer">
+			<column name="lhpd">
+				<comment>horizontal prism direction of left lens</comment>
+			</column>
+		</property>
+	    <!-- add 2.21  -->
+		<property name="rbhprism" type="java.lang.Float">
+			<column name="rbhprism" precision="12" scale="0" />
+		</property>
+		<property name="lbhprism" type="java.lang.Float">
+			<column name="lbhprism" precision="12" scale="0" />
+		</property>
+		<property name="rbhpd" type="java.lang.Integer">
+			<column name="rbhpd" /> 
+		</property>
+		<property name="lbhpd" type="java.lang.Integer">
+			<column name="lbhpd" />
+		</property>
+		 <!-- add 2.21  -->
+		<property name="rhprism" type="java.lang.Float">
+			<column name="rhprism" precision="12" scale="0">
+				<comment>horizontal prism of right lens</comment>
+			</column>
+		</property>
+		<property name="lhprism" type="java.lang.Float">
+			<column name="lhprism" precision="12" scale="0">
+				<comment>horizontal prism of left lens</comment>
+			</column>
+		</property>
+		<property name="rbasecurve" type="java.lang.Integer">
+			<column name="rbasecurve">
+				<comment>base curve of right lens</comment>
+			</column>
+		</property>
+		<property name="lbasecurve" type="java.lang.Integer">
+			<column name="lbasecurve">
+				<comment>base curve of left lens</comment>
+			</column>
+		</property>
+		<!-- 
+			- added on 2009-01-15 22:26
+			- change to right decentration 
+		-->
+		<property name="rdecentration" type="java.lang.Float">
+			<column name="rdecentration" precision="12" scale="0">
+				<comment>right decentration</comment>
+			</column>
+		</property>
+		<!-- added on 2009-01-15 22:26 -->
+		<property name="ldecentration" type="java.lang.Float">
+			<column name="ldecentration" precision="12" scale="0">
+				<comment>left decentration</comment>
+			</column>
+		</property>
+		<property name="redgethickness" type="java.lang.Float">
+			<column name="redgethickness" precision="12" scale="0">
+				<comment>edge thickness of right lens</comment>
+			</column>
+		</property>
+		<property name="ledgethickness" type="java.lang.Float">
+			<column name="ledgethickness" precision="12" scale="0">
+				<comment>edge thickness of left lens</comment>
+			</column>
+		</property>
+		<property name="rcenterthickness" type="java.lang.Float">
+			<column name="rcenterthickness" precision="12" scale="0">
+				<comment>center thickness of right lens</comment>
+			</column>
+		</property>
+		<property name="lcenterthickness" type="java.lang.Float">
+			<column name="lcenterthickness" precision="12" scale="0">
+				<comment>center thickness of left lens</comment>
+			</column>
+		</property>
+		<!-- added on 2009-01-12 22:15 -->
+		<property name="rxtreatment" type="string">
+			<column length="80" name="rxtreatment">
+				<comment>order rx treatment</comment>
+			</column>
+		</property>
+		<property name="framestyle" type="string">
+			<column length="80" name="framestyle">
+				<comment>frame style</comment>
+			</column>
+		</property>
+		<property name="refractive" type="string">
+			<column length="80" name="refractive">
+				<comment>refractive</comment>
+			</column>
+		</property>
+		
+		<property name="verdis" type="string">
+			<column length="200" name="verdis">
+				<comment>Vertex Distance</comment>
+			</column>
+		</property>
+		<property name="pantilt" type="string">
+			<column length="200" name="pantilt">
+				<comment>Pantoscopic Tilt</comment>
+			</column>
+		</property>
+		<property name="wrapangle" type="string">
+			<column length="200" name="wrapangle">
+				<comment>Wrap Angle</comment>
+			</column>
+		</property>
+		
+		<property name="tintlens" type="string">
+			<column length="80" name="tintlens">
+				<comment>tint lens info</comment>
+			</column>
+		</property>
+		<property name="tintcolor" type="string">
+			<column length="80" name="tintcolor">
+				<comment>tint color info</comment>
+			</column>
+		</property>
+		<property name="rmrp" type="java.lang.Float">
+			<column name="rmrp" precision="12" scale="0">
+				<comment>right mrp</comment>
+			</column>
+		</property>
+		<property name="lmrp" type="java.lang.Float">
+			<column name="lmrp" precision="12" scale="0">
+				<comment>left mrp</comment>
+			</column>
+		</property>
+		<property name="rpd" type="java.lang.Float">
+			<column name="rpd" precision="12" scale="0">
+				<comment>right pupil distance</comment>
+			</column>
+		</property>
+		<property name="lpd" type="java.lang.Float">
+			<column name="lpd" precision="12" scale="0">
+				<comment>left pupil distance</comment>
+			</column>
+		</property>
+		<!-- added on 2009-01-13 22:15 -->
+		<property name="quantity" type="java.lang.Float">
+			<column name="quantity" precision="12" scale="0">
+				<comment>lens quantity</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-19 22:09 -->
+		<property name="lsegheight" type="java.lang.Float">
+			<column name="lsegheight" precision="12" scale="0">
+				<comment>left segment height</comment>
+			</column>
+		</property>
+		<property name="rsegheight" type="java.lang.Float">
+			<column name="rsegheight" precision="12" scale="0">
+				<comment>right segment height</comment>
+			</column>
+		</property>		
+		<!-- added on 2009-02-19 22:10 -->
+		<property name="lsegdrop" type="java.lang.Float">
+			<column name="lsegdrop" precision="12" scale="0">
+				<comment>left segment drop</comment>
+			</column>
+		</property>
+		<property name="rsegdrop" type="java.lang.Float">
+			<column name="rsegdrop" precision="12" scale="0">
+				<comment>right segment drop</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-19 22:18 -->
+		<property name="lfarpd" type="java.lang.Float">
+			<column name="lfarpd" precision="12" scale="0">
+				<comment>left far PD</comment>
+			</column>
+		</property>
+		<property name="rfarpd" type="java.lang.Float">
+			<column name="rfarpd" precision="12" scale="0">
+				<comment>right far PD</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-19 22:19 -->	
+		<property name="lnearpd" type="java.lang.Float">
+			<column name="lnearpd" precision="12" scale="0">
+				<comment>left near PD</comment>
+			</column>
+		</property>
+		<property name="rnearpd" type="java.lang.Float">
+			<column name="rnearpd" precision="12" scale="0">
+				<comment>right near PD</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-22 17:22 -->	
+		<property name="lochgt" type="java.lang.Float">
+			<column name="lochgt" precision="12" scale="0">
+				<comment>left OC HGT</comment>
+			</column>
+		</property>
+		<property name="rochgt" type="java.lang.Float">
+			<column name="rochgt" precision="12" scale="0">
+				<comment>right OC HGT</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-23 22:30 -->
+		<property name="uv" type="java.lang.Boolean">
+			<column name="uv" default="0">
+				<comment>treatment: UV</comment>
+			</column>
+		</property>
+		<!-- addedd on 2009-09-06 21:16 -->
+		<property name="treat" type="java.lang.Integer">
+		     <column name="treat" />
+		</property>
+		<!-- modified on 2009-02-22 13:56 -->
+		<many-to-one class="com.conant.order.vo.LensTint" fetch="select"
+			name="tinttype" lazy="proxy">
+			<column name="tinttype">
+				<comment>tint type</comment>
+			</column>
+		</many-to-one>
+		<many-to-one class="com.conant.order.vo.TintColor" fetch="select"
+			name="tintcolor1" lazy="proxy">
+			<column name="tintcolor1">
+				<comment>tint color1</comment>
+			</column>
+		</many-to-one>
+		<many-to-one class="com.conant.order.vo.TintColor" fetch="select"
+			name="tintcolor2" lazy="proxy">
+			<column name="tintcolor2">
+				<comment>tint color2</comment>
+			</column>
+		</many-to-one>
+		<!-- added on 2009-02-23 23:18 -->
+		<many-to-one class="com.conant.order.vo.LensMaterial" fetch="select"
+			name="material" lazy="proxy">
+			<column name="material">
+				<comment>lens material type</comment>
+			</column>
+		</many-to-one>
+		<!-- added on 2009-06-24 20:18 -->
+		<many-to-one class="com.conant.order.vo.LensMaterial" fetch="select"
+			name="material2" lazy="proxy">
+			<column name="material2">
+				<comment>lens material type2</comment>
+			</column>
+		</many-to-one>
+		<many-to-one class="com.conant.order.vo.LensType" fetch="select"
+			name="lenstype" lazy="proxy">
+			<column name="lenstype">
+				<comment>lens type</comment>
+			</column>
+		</many-to-one>
+		<!-- added on 2009-10-05 16:45 -->
+		<many-to-one class="com.conant.order.vo.LensDesign" fetch="select"
+			name="lensdesign" lazy="proxy">
+			<column name="lensdesign">
+				<comment>lens design</comment>
+			</column>
+		</many-to-one>
+		<many-to-one class="com.conant.order.vo.LensChannel" fetch="select"
+			name="channellength" lazy="proxy">
+			<column name="channellength">
+				<comment>channel length</comment>
+			</column>
+		</many-to-one>
+	</class>
+
+	<!-- added on 2008-11-20 22:00 LensModel -->
+	<class name="com.conant.order.vo.LensModel" table="ors_lens_model">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="opticaltype" type="java.lang.Integer">
+			<column name="opticaltype" not-null="true">
+				<comment>optical type of lens</comment>
+			</column>
+		</property>
+		<property name="lenscolor" type="java.lang.Integer">
+			<column name="lenscolor" not-null="true">
+				<comment>lens color</comment>
+			</column>
+		</property>
+		<property name="lenscoating" type="java.lang.Integer">
+			<column name="lenscoating" not-null="true">
+				<comment>coating type</comment>
+			</column>
+		</property>
+		<property name="customizable" type="java.lang.Integer">
+			<column name="customizable" not-null="true">
+				<comment>customizable or not</comment>
+			</column>
+		</property>
+		<property name="lang" type="string">
+			<column length="20" name="lang" not-null="true" default="en">
+				<comment>language</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-19 20:51 -->
+		<property name="typeNo" type="string">
+			<column length="40" name="typeNo" not-null="true">
+				<comment>lens type No.</comment>
+			</column>
+		</property>
+		<!-- modified on 2009-02-22 15:51 -->
+		<property name="typeName" type="string">
+			<column length="120" name="typeName" not-null="true" unique="true">
+				<comment>lens type name</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-22 13:17 -->
+		<many-to-one class="com.conant.order.vo.LensMaterial" fetch="select"
+			name="material" lazy="proxy">
+			<column name="material" not-null="true">
+				<comment>lens material</comment>
+			</column>
+		</many-to-one>
+		<!-- modified on 2009-02-22 13:19 -->
+		<many-to-one class="com.conant.order.vo.LensType" fetch="select"
+			name="lenstype" lazy="proxy">		
+			<column name="lenstype" not-null="true">
+				<comment>lens type</comment>
+			</column>
+		</many-to-one>
+	</class>
+	
+	<!-- added on 2008-11-20 22:00 FrameDetail -->
+	<class name="com.conant.order.vo.FrameDetail" table="ors_frame_detail">
+		<id column="id" name="id">
+			<generator class="foreign">
+				<param name="property">orsorder</param>
+			</generator>
+		</id>
+		<one-to-one class="com.conant.order.vo.OrsOrder" constrained="true" name="orsorder" />
+		<many-to-one class="com.conant.order.vo.FrameColor" fetch="select" name="framecolor">
+			<column name="framecolor">
+				<comment>color of frame</comment>
+			</column>
+		</many-to-one>
+		<many-to-one class="com.conant.order.vo.FrameModel" fetch="select" name="framemodel">
+			<column name="modelid">
+				<comment>the model id of frame</comment>
+			</column>
+		</many-to-one>
+		<property name="rboxasize" type="java.lang.Float">
+			<column name="rboxasize">
+				<comment>right size of box a</comment>
+			</column>
+		</property>
+		<property name="lboxasize" type="java.lang.Integer">
+			<column name="lboxasize">
+				<comment>left size of box a</comment>
+			</column>
+		</property>
+		<property name="rboxbsize" type="java.lang.Float">
+			<column name="rboxbsize">
+				<comment>right size of box b</comment>
+			</column>
+		</property>
+		<property name="lboxbsize" type="java.lang.Integer">
+			<column name="lboxbsize">
+				<comment>left size of box b</comment>
+			</column>
+		</property>
+		<property name="rfittingheight" type="java.lang.Float">
+			<column name="rfittingheight" precision="12" scale="0">
+				<comment>right fitting height</comment>
+			</column>
+		</property>
+		<property name="lfittingheight" type="java.lang.Float">
+			<column name="lfittingheight" precision="12" scale="0">
+				<comment>left fitting height</comment>
+			</column>
+		</property>
+		<property name="rdistance" type="java.lang.Float">
+			<column name="rdistance" precision="12" scale="0">
+				<comment>right pupil distance</comment>
+			</column>
+		</property>
+		<property name="ldistance" type="java.lang.Float">
+			<column name="ldistance" precision="12" scale="0">
+				<comment>left pupil distance</comment>
+			</column>
+		</property>
+		<property name="dbl" type="java.lang.Float">
+			<column name="dbl" precision="12" scale="0">
+				<comment>distance between lenses</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-19 20:44 -->
+		<property name="ed" type="java.lang.Float">
+			<column name="ed" precision="12" scale="0">
+				<comment>effective diameter</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-19 22:15 -->
+		<property name="dbc" type="java.lang.Float">
+			<column name="dbc" precision="12" scale="0">
+				<comment>distance between centers(frame PD)</comment>
+			</column>
+		</property>
+		<!-- added on 2009-03-03 19:37 -->
+		<property name="framestyle" type="string">
+			<column length="80" name="framestyle">
+				<comment>frame style</comment>
+			</column>
+		</property>
+		<!-- added on 2009-06-24 21:47 -->
+		<property name="frametype" type="java.lang.Integer">
+			<column name="frametype">
+				<comment>frame type</comment>
+			</column>
+		</property>
+		<!-- added on 2010-01-15 -->
+		<property name="framepattern" type="java.lang.Integer">
+		   <column name="framepattern" />
+		</property>
+	</class>
+	
+	<!-- added on 2008-11-20 22:00 FrameModel -->
+	<class name="com.conant.order.vo.FrameModel" table="ors_frame_model">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="collection" type="string">
+			<column length="80" name="collection" not-null="true">
+				<comment>frame collection</comment>
+			</column>
+		</property>
+		<property name="rimless" type="java.lang.Integer">
+			<column name="rimless" not-null="true">
+				<comment>rimless or not</comment>
+			</column>
+		</property>
+		<!-- added on 2009-02-19 20:51 -->
+		<property name="typeNo" type="string">
+			<column length="40" name="typeNo" not-null="true" unique="true">
+				<comment>frame type No.</comment>
+			</column>
+		</property>
+		<!-- modified on 2009-02-19 21:59 -->
+		<property name="typeName" type="string">
+			<column length="120" name="typeName" not-null="true" unique="true">
+				<comment>frame type name</comment>
+			</column>
+		</property>
+	</class>
+	
+	<!-- added on 2008-11-20 22:00 FrameColor -->
+	<class name="com.conant.order.vo.FrameColor" table="ors_frame_color">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="typeNo" type="string">
+			<column length="40" name="typeNo" not-null="true">
+				<comment>frame color type NO.</comment>
+			</column>
+		</property>		
+		<property name="typeName" type="string">
+			<column length="80" name="typeName" not-null="true">
+				<comment>frame color type name</comment>
+			</column>
+		</property>
+	</class>
+
+	<!-- added on 2009-02-19 20:56 LensMaterial -->
+	<class name="com.conant.order.vo.LensMaterial" table="ors_lens_material">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="typeNo" type="string">
+			<column length="40" name="typeNo" not-null="true" unique="true">
+				<comment>material type NO.</comment>
+			</column>
+		</property>
+		<property name="typeName" type="string">
+			<column name="typeName">
+				<comment>material type name</comment>
+			</column>
+		</property>
+	</class>
+	
+	<!-- added on 2009-02-22 13:21 LensType -->
+	<class name="com.conant.order.vo.LensType" table="ors_lens_type">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="typeNo" type="string">
+			<column length="40" name="typeNo" not-null="true" unique="true">
+				<comment>lens type NO.</comment>
+			</column>
+		</property>
+		<property name="typeName" type="string">
+			<column name="typeName">
+				<comment>lens type name</comment>
+			</column>
+		</property>
+	</class>
+	
+	<!-- added on 2009-02-19 21:06 LensTreatment -->
+	<class name="com.conant.order.vo.LensTreatment" table="ors_lens_treatment">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="typeNo" type="string">
+			<column length="40" name="modelNo" not-null="true" unique="true">
+				<comment>lens treatment type NO.</comment>
+			</column>
+		</property>
+		<property name="typeName" type="string">
+			<column name="typeName">
+				<comment>lens treatment type name</comment>
+			</column>
+		</property>
+	</class>
+	
+	<!-- added on 2009-02-19 21:39 LensTint -->
+	<class name="com.conant.order.vo.LensTint" table="ors_lens_tint">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="typeNo" type="string">
+			<column length="40" name="typeNo" not-null="true" unique="true">
+				<comment>lens tint type NO.</comment>
+			</column>
+		</property>
+		<property name="typeName" type="string">
+			<column name="typeName">
+				<comment>lens tint type name</comment>
+			</column>
+		</property>
+	</class>
+	
+	<!-- added on 2008-11-20 22:00 TintColor -->
+	<class name="com.conant.order.vo.TintColor" table="ors_tint_color">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="typeNo" type="string">
+			<column length="40" name="typeNo" not-null="true" unique="true">
+				<comment>color type NO.</comment>
+			</column>
+		</property>		
+		<property name="typeName" type="string">
+			<column length="40" name="typeName" not-null="true" unique="true">
+				<comment>color type name</comment>
+			</column>
+		</property>
+		<property name="transparency" type="java.lang.Integer">
+			<column name="transparency">
+				<comment>transparency rate, by percent</comment>
+			</column>
+		</property>
+	</class>
+	
+	<!-- added on 2008-12-20 22:00 ProcessInstance -->
+	<class name="com.conant.order.vo.ProcessInstance" table="ors_processInstance"
+		dynamic-insert="true" dynamic-update="true">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="token" type="java.lang.Integer">
+			<column name="token" not-null="true">
+				<comment>token</comment>
+			</column>
+		</property>
+		<property name="withdrawal" type="java.lang.Boolean">
+			<column name="withdrawal" not-null="true" default="0">
+				<comment>withdrawal or not</comment>
+			</column>
+		</property>
+		<set inverse="true" name="processLogs" cascade="all" order-by="id desc" lazy="true">
+			<key>
+				<column name="processId" not-null="true">
+					<comment>the id of process instance</comment>
+				</column>
+			</key>
+			<one-to-many class="com.conant.order.vo.ProcessLog" />
+		</set>
+		<set inverse="true" name="nodeInstances" cascade="all" order-by="nodeId asc" lazy="true">
+			<key>
+				<column name="processId" not-null="true">
+					<comment>the id of process instance</comment>
+				</column>
+			</key>
+			<one-to-many class="com.conant.order.vo.NodeInstance" />
+		</set>
+		<set inverse="true" name="tokenVariables" cascade="all" lazy="true">
+			<key>
+				<column name="processId" not-null="true">
+					<comment>the id of process instance</comment>
+				</column>
+			</key>
+			<one-to-many class="com.conant.order.vo.TokenVariable" />
+		</set>
+	</class>
+
+	<!-- added on 2008-12-20 22:00 ProcessLog -->
+	<class name="com.conant.order.vo.ProcessLog" table="ors_processLog">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="node" type="java.lang.Integer">
+			<column name="nodeId" not-null="true">
+				<comment>node id</comment>
+			</column>
+		</property>
+		<property name="processdate" type="timestamp">
+			<column length="19" name="processdate">
+				<comment>process date</comment>
+			</column>
+		</property>
+		<property name="user" type="string">
+			<column length="40" name="user">
+				<comment>user name</comment>
+			</column>
+		</property>
+		<property name="message" type="string">
+			<column length="200" name="message">
+				<comment>message</comment>
+			</column>
+		</property>
+		<many-to-one class="com.conant.order.vo.ProcessInstance"
+			fetch="select" name="processInstance">
+			<column name="processId">
+				<comment>id of process instance</comment>
+			</column>
+		</many-to-one>
+	</class>
+	
+	<!-- added on 2008-12-20 22:00 NodeInstance -->
+	<class name="com.conant.order.vo.NodeInstance" table="ors_nodeInstance">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="node" type="java.lang.Integer">
+			<column name="nodeId" not-null="true">
+				<comment>node id</comment>
+			</column>
+		</property>
+		<property name="enterdate" type="timestamp">
+			<column length="19" name="enterdate">
+				<comment>enter date</comment>
+			</column>
+		</property>		
+		<property name="leavedate" type="timestamp">
+			<column length="19" name="leavedate">
+				<comment>leave date</comment>
+			</column>
+		</property>
+		<property name="user" type="string">
+			<column length="40" name="user">
+				<comment>user name</comment>
+			</column>
+		</property>
+		<property name="message" type="string">
+			<column length="200" name="message">
+				<comment>message</comment>
+			</column>
+		</property>
+		<many-to-one class="com.conant.order.vo.ProcessInstance"
+			fetch="select" name="processInstance">
+			<column name="processId">
+				<comment>id of process instance</comment>
+			</column>
+		</many-to-one>
+	</class>
+	
+	<!-- added on 2009-07-19 15:37 TokenVariable -->
+	<class name="com.conant.order.vo.TokenVariable" table="ors_tokenvariablemap">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="token" type="java.lang.Integer">
+			<column name="token" not-null="true">
+				<comment>token</comment>
+			</column>
+		</property>
+		<property name="name" type="string">
+			<column length="80" name="name">
+				<comment>variable name</comment>
+			</column>
+		</property>
+		<property name="stringvalue" type="string">
+			<column length="255" name="stringvalue">
+				<comment>string value</comment>
+			</column>
+		</property>
+		<many-to-one class="com.conant.order.vo.ProcessInstance"
+			fetch="select" name="processInstance">
+			<column name="processId">
+				<comment>id of process instance</comment>
+			</column>
+		</many-to-one>
+	</class>
+		
+	<!-- added on 2009-06-14 15:10 Couriers -->
+	<class name="com.conant.order.vo.Couriers" table="ors_couriers">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="couriersNo" type="string">
+			<column length="20" name="couriersNo">
+				<comment>couriers number</comment>
+			</column>
+		</property>
+		<property name="name" type="string">
+			<column length="80" name="name">
+				<comment>name</comment>
+			</column>
+		</property>
+		<property name="homepage" type="string">
+			<column length="80" name="homepage">
+				<comment>home page</comment>
+			</column>
+		</property>
+		<property name="trackingUrl" type="string">
+			<column length="80" name="trackingUrl">
+				<comment>shipment tracking url</comment>
+			</column>
+		</property>
+	</class>
+	
+	<!-- added on 2009-10-05 16:50 LensDesign -->
+	<class name="com.conant.order.vo.LensDesign" table="ors_lens_design">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="typeNo" type="string">
+			<column length="40" name="typeNo" not-null="true" unique="true">
+				<comment>design type NO.</comment>
+			</column>
+		</property>
+		<property name="typeName" type="string">
+			<column name="typeName">
+				<comment>design type name</comment>
+			</column>
+		</property>
+	</class>
+	
+	<!-- added on 2009-10-05 16:50 LensChannel -->
+	<class name="com.conant.order.vo.LensChannel" table="ors_lens_channel">
+		<id name="id" type="java.lang.Integer">
+			<column name="id" />
+			<generator class="native" />
+		</id>
+		<property name="typeNo" type="string">
+			<column length="40" name="typeNo" not-null="true" unique="true">
+				<comment>channel type NO.</comment>
+			</column>
+		</property>
+		<property name="typeName" type="string">
+			<column name="typeName">
+				<comment>channel type name</comment>
+			</column>
+		</property>
+	</class>
+</hibernate-mapping>

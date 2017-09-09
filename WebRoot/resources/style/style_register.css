@@ -1,0 +1,72 @@
+/* CSS Document */
+/* CSS Document */
+
+body,td,th {
+	font-family: Arial;
+	font-size: 11px;
+}
+body {
+    background-color: #f5faf7;
+	margin-left: 5px;
+	margin-top: 5px;
+}
+
+a{
+	color: #A65911;
+}
+
+a.quick_link{
+	color: #32667B;
+}
+
+.strong {font-size:14px;}
+
+.quote_text{
+	font-family:Tahoma;
+	font-size:9px;
+	color:#32667B;
+}
+.header{
+	font-family: Arial;
+	font-size: 12px;
+}
+.footer{
+	font-family: Arial;
+	font-size: 10px;
+	color:#606060;
+}
+a.footer_link{
+	font-family: Arial;
+	font-size: 10px;
+	color:#606060;
+}
+
+.title2{
+ color:#656565;
+}
+
+.title{
+ font-size:12px;
+ color:#32667B;
+ font-weight:bold;
+}
+
+a.article_title{
+ color:#32667B;
+ font-weight:bold;
+}
+
+.style1 {
+	font-size: 16px;
+	font-weight: bold;
+	color: #32667B;
+}
+#log{
+background-image:url(../images/bg.jpg);
+background-repeat:repeat-x;
+}
+#cantent{
+FILTER: progid:DXImageTransform.Microsoft.Gradient(enabled=true, GradientType=0, StartColorStr=#ebf9f2, EndColorStr=#d4f4e3);
+}
+.b{
+border:1px solid #CCCCCC;}

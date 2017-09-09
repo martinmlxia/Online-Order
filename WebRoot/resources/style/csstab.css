@@ -1,0 +1,57 @@
+@CHARSET "UTF-8";
+
+body {
+	font-family: verdana, arial, helvetica, sans-serif;
+	font-size: 72%;
+	font-weight: bold;
+	background: #F3FAFF;
+}
+
+ul {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+img {
+	border: none;
+}
+
+#tabmenu {
+	width: 255px;
+	margin: 0px;
+	text-align: left;
+}
+
+#tabmenu li a {
+	text-decoration: none;
+	height: 32px;
+	voice-family: "\"}\"";
+	voice-family: inherit;
+	height: 24px;
+}
+
+#tabmenu li a:link,#tabmenu li a:visited {
+	color: #777;
+	display: block;
+	background: url(../images/tabmenu3.gif);
+	padding: 8px 0 0 25px;
+}
+
+#tabmenu li a:hover{
+	color: #257EB7;
+	background: url(../images/tabmenu3.gif) 0 -32px;
+	padding: 8px 0 0 25px;
+}
+
+#tabmenu li #current {
+	color: #777;
+	background: url(../images/tabmenu3.gif) 0 -64px;
+	padding: 8px 0 0 20px;	
+}
+
+#tabmenu li a:active {
+	color: #fff;
+	background: url(../images/tabmenu3.gif) 0 -64px;
+	padding: 8px 0 0 25px;
+}

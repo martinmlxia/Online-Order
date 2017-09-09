@@ -1,0 +1,810 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+
+	<description>Online-Order Spring Configuration</description>
+
+	<!--
+		- hibernate session interceptor 
+		- agang: use this interceptor to make HibernateTemplate supporting lazy initialization.
+	-->
+	<bean name="openSessionInViewInterceptor"
+		class="org.springframework.orm.hibernate3.support.OpenSessionInViewInterceptor">
+		<property name="sessionFactory">
+			<ref bean="sessionFactory" />
+		</property>
+		<!-- 1 means FLUSH_AUTO -->
+		<property name="flushMode">
+			<value>1</value>
+		</property>
+	</bean>
+	
+	<!--
+		- locale change interceptor
+		- agang: use this interceptor to change locale manually.
+	 -->
+	<bean id="localeChangeInterceptor" class="org.springframework.web.servlet.i18n.LocaleChangeInterceptor">
+    	<property name="paramName" value="lang" />
+	</bean>
+
+	<bean id="SimpleUrlMap_ord"
+		class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping"
+		singleton="true" lazy-init="default" autowire="default"
+		dependency-check="default">
+		<property name="interceptors">
+			<list>
+				<ref bean="openSessionInViewInterceptor" />
+				<ref bean="localeChangeInterceptor" />
+			</list>
+		</property>
+		<property name="mappings">
+			<props>
+				<!--comm management-->
+				<prop key="/welcome.ord">commController</prop>
+				<prop key="/login.ord">loginController</prop>
+				<prop key="/menu.ord">functionController</prop>
+				<prop key="/ordTimeout.ord">timeoutController</prop>
+				<prop key="/register.ord">registerController</prop>
+				<prop key="/queryUser.ord">queryUserInfoController</prop>
+				<prop key="/viewUserInfo.ord">viewUserInfoController</prop>
+				<prop key="/updateUserInfo.ord">updateUserInfoController</prop>
+				<prop key="/deleteUserInfo.ord">deleteUserInfoController</prop>
+				<prop key="/queryUserInfoById.ord">queryUserInfoByIdController</prop>
+				<!-- order management -->
+				<!-- admin -->
+				<prop key="/adminOrders.ord">adminQueryOrdersController</prop>
+				<prop key="/adminExportOrders.ord">adminExportOrdersController</prop>
+				<prop key="/adminViewOrder.ord">adminViewOrderController</prop>
+				<prop key="/adminModifyFrameLensOrder.ord">adminModifyFrameLensOrderController</prop>
+				<!-- client -->
+				<prop key="/addLensOrder.ord">addLensOrderController</prop>
+				<prop key="/addFrameLensOrder.ord">addFrameLensOrderController</prop>
+				<prop key="/addFreeFormOrder.ord">addFreeFormOrderController</prop>
+				<prop key="/listOrders.ord">listOrdersController</prop>
+				<prop key="/myOrders.ord">clientQueryOrdersController</prop>
+				<prop key="/myViewOrder.ord">clientViewOrderController</prop>
+				<prop key="/myModifyOrder.ord">clientModifyOrderController</prop>
+				<prop key="/myModifyFrameLensOrder.ord">clientModifyFrameLensOrderController</prop>
+				<prop key="/myModifyFreeFormOrder.ord">clientModifyFreeFormOrderController</prop>
+				<prop key="/myDeleteOrders.ord">clientDeleteOrdersController</prop>
+				<prop key="/myExportOrders.ord">clientExportOrdersController</prop>
+				<!-- sales -->
+				<prop key="/salesOrders.ord">salesQueryOrdersController</prop>
+				<prop key="/salesViewOrder.ord">salesViewOrderController</prop>
+				<prop key="/salesModifyOrder.ord">salesModifyOrderController</prop>
+				<prop key="/salesModifyFrameLensOrder.ord">salesModifyFrameLensOrderController</prop>
+				<prop key="/salesModifyFreeFormOrder.ord">salesModifyFreeFormOrderController</prop>
+				<prop key="/salesDeleteOrders.ord">salesDeleteOrdersController</prop>
+				<prop key="/salesBatchModifyOrders.ord">salesBatchModifyOrdersController</prop>
+				<prop key="/salesExportOrders.ord">salesExportOrdersController</prop>
+				<!-- produce -->
+				<prop key="/produceOrders.ord">produceQueryOrdersController</prop>
+				<prop key="/produceViewOrder.ord">produceViewOrderController</prop>
+				<prop key="/producePrintOrder.ord">producePrintOrderController</prop>
+				<prop key="/producePrintOrders.ord">producePrintOrdersController</prop>
+				<prop key="/produceExportOrders.ord">produceExportOrdersController</prop>
+				<prop key="/producePrintCounter.ord">producePrintCounterController</prop>
+				<prop key="/producePackingPrint.ord">producePackingPrintController</prop>
+				<!-- order handover -->
+				<prop key="/orderHandover.ord">orderHandoverDispatcher</prop>
+				<prop key="/orderAudit.ord">orderAuditController</prop>
+				<prop key="/orderProduce.ord">orderProduceController</prop>
+				<prop key="/orderDeliver.ord">orderDeliverController</prop>
+				<prop key="/orderCheck.ord">orderCheckController</prop>
+				<prop key="/orderComplete.ord">orderCompleteController</prop>
+				<!-- batch command -->
+				<prop key="/myBatchCommand.ord">clientBatchCommandController</prop>
+				<prop key="/salesBatchCommand.ord">salesBatchCommandController</prop>
+				<prop key="/adminBatchCommand.ord">adminBatchCommandController</prop>
+				<prop key="/produceBatchCommand.ord">produceBatchCommandController</prop>
+				<prop key="/batchImportOrders.ord">batchImportOrdersController</prop>
+			</props>
+		</property>
+	</bean>
+	<!-- modify by Martin begin-->
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host">
+			<value>10.202.8.201</value>
+		</property>
+		<property name="javaMailProperties">
+			<props>
+				<prop key="mail.smtp.auth">true</prop>
+			</props>
+		</property>
+		<property name="username">
+			<value>Martin M.L. Xia/CMM/FOXCONN@FOXCONN</value>
+		</property>
+		<property name="password">
+			<value>seaxialanxia</value>
+		</property>
+	</bean>
+
+	<bean id="mailMessage" class="org.springframework.mail.SimpleMailMessage">
+		<property name="to">
+			<value>Elvis W.J. Xiong/CMM/FOXCONN@FOXCONN</value>
+		</property>
+		<property name="from">
+			<value>Martin M.L. Xia/CMM/FOXCONN@FOXCONN</value>
+		</property>
+		<property name="subject">
+			<!-- Email 标题 -->
+			<value>A Spring Mail sender</value>
+		</property>
+	</bean>
+
+	<bean id="functionDao" class="com.conant.order.dao.hibernate.FunctionDaoIMP">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+
+	<bean id="registerDao" class="com.conant.order.dao.hibernate.RegisterDaoIMP">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	
+	<bean id="commController" class="com.conant.order.common.CommController"
+		singleton="true" lazy-init="default" autowire="default"
+		dependency-check="default">
+		<property name="functionDao">
+			<ref bean="functionDao" />
+		</property>
+	</bean>
+
+	<bean id="functionController" class="com.conant.order.web.controller.FunctionController"
+		singleton="true" lazy-init="default" autowire="default"
+		dependency-check="default">
+		<property name="functionDao">
+			<ref bean="functionDao" />
+		</property>
+	</bean>
+
+	<bean id="registerController" class="com.conant.order.web.controller.RegisterController">
+		<property name="registerDao" ref="registerDao" />
+		<property name="mailMessage">
+			<ref bean="mailMessage" />
+		</property>
+		<property name="mailSender">
+			<ref bean="mailSender" />
+		</property>		
+		<property name="formView">
+			<value>register</value>
+		</property>
+		<property name="successView">
+			<value>common/ok</value>
+		</property>
+	</bean>
+	
+	<bean id="loginController" class="com.conant.order.web.controller.LoginController"
+		singleton="true" lazy-init="default" autowire="default"
+		dependency-check="default">
+		<property name="formView">
+			<value>login</value>
+		</property>
+		<property name="successView">
+			<value>ord_frame</value>
+		</property>
+	</bean>
+
+	<bean id="queryUserInfoController" class="com.conant.order.web.controller.QueryUserInfoController">
+		<property name="registerDao" ref="registerDao" />
+		<property name="formView" value="userInfoList" />
+		<property name="successView" value="userInfoList" />
+		<property name="pageSize" value="20" />
+	</bean>
+
+	<bean id="queryUserInfoByIdController" class="com.conant.order.web.controller.QueryUserInfoByIdController">
+	<property name="registerDao" ref="registerDao" />  
+    <property name="formView">
+      <value>common/err</value>
+    </property>
+    <property name="successView">
+      <value>updatePersonalUserInfo</value>
+    </property>
+	</bean>
+	
+  <bean id="viewUserInfoController" class="com.conant.order.web.controller.ViewUserInfoController" singleton="true" lazy-init="default" autowire="default" dependency-check="default">
+	<property name="registerDao" ref="registerDao" />  
+    <property name="formView">
+      <value>userInfoList</value>
+    </property>
+    <property name="successView">
+      <value>viewUserInfo</value>
+    </property>    
+  </bean>
+ 
+  <bean id="updateUserInfoController" class="com.conant.order.web.controller.UpdateUserInfoController" singleton="true" lazy-init="default" autowire="default" dependency-check="default">
+	<property name="registerDao" ref="registerDao" />  
+    <property name="formView">
+      <value>updateUserInfo</value>
+    </property>
+    <property name="errorView" value="common/err" />
+    <property name="successView">
+      <value>common/ok</value>
+    </property>    
+  </bean>
+
+
+  <bean id="deleteUserInfoController" class="com.conant.order.web.controller.DeleteUserInfoController">
+	<property name="registerDao" ref="registerDao" />  
+    <property name="formView">
+      <value>userInfoList</value>
+    </property>
+    <property name="successView">
+      <value>common/ok</value>
+    </property>    
+  </bean>
+      		
+	<!-- modify by Martin end -->
+
+	<!-- modify by agang begin-->
+
+	<bean id="paramResolver"  
+        class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver">   
+        <property name="paramName">   
+            <value>method</value> 
+        </property>
+		<property name="logicalMappings">
+			<props>
+				<prop key="Batch Commit">batchCommitOrders</prop>
+				<prop key="Batch Print">batchPrintOrders</prop>
+				<prop key="Batch Modify">batchModifyOrders</prop>
+				<prop key="Batch Delete">batchDeleteOrders</prop>
+				<prop key="Batch Packing Print">batchPackingPrints</prop>
+				<prop key="批量处理">batchCommitOrders</prop>
+				<prop key="批量打印">batchPrintOrders</prop>
+				<prop key="批量修改">batchModifyOrders</prop>
+				<prop key="批量删除">batchDeleteOrders</prop>
+				<prop key="批量打印包装">batchPackingPrints</prop>
+			</props>
+		</property>
+    </bean>
+    
+	<bean id="clientParamResolver"  
+        class="org.springframework.web.servlet.mvc.multiaction.ParameterMethodNameResolver">   
+        <property name="paramName">   
+            <value>method</value> 
+        </property>
+		<property name="logicalMappings">
+			<props>
+				<prop key="Batch Print">batchPrintOrders</prop>
+				<prop key="Batch Delete">batchDeleteOrders</prop>
+				<prop key="批量打印">batchPrintOrders</prop>
+				<prop key="批量删除">clientBatchDeleteOrders</prop>
+			</props>
+		</property>
+    </bean>
+    
+	<bean id="messageSource"
+		class="org.springframework.context.support.ReloadableResourceBundleMessageSource">
+		<property name="basenames">
+			<list>
+				<value>classpath:orderMessages</value>
+				<value>classpath:validateMessages</value>
+				<value>classpath:lensModel</value>
+				<value>classpath:importExcel</value>
+				<value>classpath:viewOrder</value>
+				<value>classpath:/other/messageCode</value>
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="localeResolver" class="org.springframework.web.servlet.i18n.SessionLocaleResolver">
+	</bean>
+	
+	<bean id="timeoutController" class="com.conant.order.web.controller.TimeoutController">
+	</bean>
+	
+	<bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+		<property name="maxUploadSize" value="104857600"/>
+	</bean>
+
+	<bean id="addLensOrderController" class="com.conant.order.web.controller.AddLensOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Client_EditOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="validator" ref="lensOrderValidator" />
+	</bean>
+	
+	<bean id="addFrameLensOrderController" class="com.conant.order.web.controller.AddFrameLensOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Client_NewFrameLensOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="validator" ref="frameLensOrderValidator" />
+		<property name="returnUrl" value="/addFrameLensOrder.ord" />
+		<property name="printView" value="/myViewOrder.ord" />
+	</bean>
+	
+	<bean id="addFreeFormOrderController" class="com.conant.order.web.controller.AddFreeFormOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Client_NewFreeFormOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="validator" ref="freeFormOrderValidator" />
+		<property name="returnUrl" value="/addFreeFormOrder.ord" />
+		<property name="printView" value="/myViewOrder.ord" />
+	</bean>
+
+	<bean id="batchImportOrdersController" class="com.conant.order.web.controller.BatchImportOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="formView" value="BatchImportOrders" />
+		<property name="returnUrl" value="/myOrders.ord" />
+	</bean>
+	
+	<bean id="listOrdersController" class="com.conant.order.web.controller.ListOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+	</bean>
+	
+	<bean id="orderHandoverDispatcher"
+		class="com.conant.order.web.controller.OrderHandoverDispatcher">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="errorView" value="common/err" />
+	</bean>
+		
+	<bean id="orderAuditController"
+		class="com.conant.order.web.controller.OrderAuditController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="handover" />
+		<property name="formView" value="Order_Audit" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+	</bean>
+	
+	<bean id="orderProduceController"
+		class="com.conant.order.web.controller.OrderProduceController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="handover" />
+		<property name="formView" value="Order_Produce" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/produceOrders.ord" />
+	</bean>
+	
+	<bean id="orderDeliverController"
+		class="com.conant.order.web.controller.OrderDeliverController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="handover" />
+		<property name="formView" value="Order_Deliver" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/produceOrders.ord" />
+	</bean>
+	
+	<bean id="orderCheckController"
+		class="com.conant.order.web.controller.OrderCheckController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="handover" />
+		<property name="formView" value="Order_Check" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+	</bean>
+	
+	<bean id="orderCompleteController"
+		class="com.conant.order.web.controller.OrderCompleteController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="handover" />
+		<property name="formView" value="Order_Complete" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+	</bean>
+	
+	<bean id="adminQueryOrdersController"
+		class="com.conant.order.web.controller.AdminQueryOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="orderQuerier" />
+		<property name="formView" value="Admin_QueryOrders" />
+		<property name="successView" value="Admin_QueryOrders" />
+		<property name="errorView" value="common/err" />
+		<property name="pageSize" value="100" />
+		<property name="returnUrl" value="/adminOrders.ord" />
+		<property name="paramPrefix" value="admin" />
+	</bean>
+	
+	<bean id="adminExportOrdersController" class="com.conant.order.web.controller.AdminExportOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="orderQuerier" />
+		<property name="formView" value="Admin_ExportOrders" />
+		<property name="successView" value="" />
+		<property name="errorView" value="common/err" />
+		<property name="paramPrefix" value="admin" />
+		<property name="returnUrl" value="/adminOrders.ord" />
+	</bean>
+	
+	<bean id="adminViewOrderController" class="com.conant.order.web.controller.ViewOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Sales_ViewOrder" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/adminOrders.ord" />
+	</bean>
+
+	<bean id="adminModifyFrameLensOrderController"
+		class="com.conant.order.web.controller.ModifyFrameLensOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Sales_EditFrameLensOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="validator" ref="frameLensOrderValidator" />
+		<property name="returnUrl" value="/adminOrders.ord" />
+		<property name="commitUrl" value="/adminModifyFrameLensOrder.ord" />
+	</bean>
+	
+	<bean id="adminBatchCommandController" class="com.conant.order.web.controller.BatchCommandController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="batchModifyView" value="Sales_EditOrders" />
+		<property name="returnUrl" value="/adminOrders.ord" />
+		<property name="methodNameResolver" ref="paramResolver"/>
+	</bean>
+    	
+	<bean id="clientQueryOrdersController"
+		class="com.conant.order.web.controller.ClientQueryOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="orderQuerier" />
+		<property name="formView" value="Client_QueryOrders" />
+		<property name="successView" value="Client_QueryOrders" />
+		<property name="errorView" value="common/err" />
+		<property name="pageSize" value="100" />
+		<property name="returnUrl" value="/myOrders.ord" />
+		<property name="paramPrefix" value="client" />
+	</bean>
+
+	<bean id="clientViewOrderController" class="com.conant.order.web.controller.ViewOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Client_ViewOrder" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/myOrders.ord" />
+	</bean>
+	
+	<bean id="clientModifyOrderController"
+		class="com.conant.order.web.controller.ModifyLensOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Client_EditOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="validator" ref="lensOrderValidator" />
+		<property name="returnUrl" value="/myOrders.ord" />
+	</bean>
+	
+	<bean id="clientModifyFrameLensOrderController"
+		class="com.conant.order.web.controller.ModifyFrameLensOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Client_EditFrameLensOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="validator" ref="frameLensOrderValidator" />
+		<property name="returnUrl" value="/myOrders.ord" />
+	</bean>
+	
+	<bean id="clientModifyFreeFormOrderController"
+		class="com.conant.order.web.controller.ModifyFreeFormOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Client_EditFreeFormOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="validator" ref="freeFormOrderValidator" />
+		<property name="returnUrl" value="/myOrders.ord" />
+	</bean>
+	
+	<bean id="clientDeleteOrdersController" class="com.conant.order.web.controller.DeleteOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="orderQuerier" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/myOrders.ord" />
+	</bean>	
+	
+	<bean id="clientBatchCommandController" class="com.conant.order.web.controller.BatchCommandController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="batchPrintView" value="Client_PrintOrders" />
+		<property name="returnUrl" value="/myOrders.ord" />
+		<property name="methodNameResolver" ref="clientParamResolver"/>
+	</bean>
+	
+	<bean id="clientExportOrdersController" class="com.conant.order.web.controller.ClientExportOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="orderQuerier" />
+		<property name="formView" value="Client_ExportOrders" />
+		<property name="successView" value="" />
+		<property name="errorView" value="common/err" />
+		<property name="paramPrefix" value="client" />
+		<property name="returnUrl" value="/myOrders.ord" />
+	</bean>	
+
+	<bean id="salesQueryOrdersController"
+		class="com.conant.order.web.controller.SalesQueryOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="orderQuerier" />
+		<property name="formView" value="Sales_QueryOrders" />
+		<property name="successView" value="Sales_QueryOrders" />
+		<property name="errorView" value="common/err" />
+		<property name="pageSize" value="100" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+		<property name="paramPrefix" value="sales" />
+	</bean>
+
+	<bean id="salesViewOrderController" class="com.conant.order.web.controller.ViewOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Sales_ViewOrder" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+	</bean>
+
+	<bean id="salesModifyOrderController"
+		class="com.conant.order.web.controller.SalesModifyLensOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Sales_EditOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="validator" ref="lensOrderValidator" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+	</bean>
+
+	<bean id="salesModifyFrameLensOrderController"
+		class="com.conant.order.web.controller.ModifyFrameLensOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Sales_EditFrameLensOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="validator" ref="frameLensOrderValidator" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+		<property name="commitUrl" value="/salesModifyFrameLensOrder.ord" />
+	</bean>
+	
+	<bean id="salesModifyFreeFormOrderController"
+		class="com.conant.order.web.controller.ModifyFreeFormOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Sales_EditFreeFormOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="validator" ref="freeFormOrderValidator" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+	</bean>	
+
+	<bean id="salesBatchModifyOrdersController"
+		class="com.conant.order.web.controller.BatchModifyController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="form" />
+		<property name="formView" value="Sales_EditOrders" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+	</bean>
+	
+	<bean id="salesDeleteOrdersController" class="com.conant.order.web.controller.DeleteOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="orderQuerier" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+	</bean>
+	
+	<bean id="salesBatchCommandController" class="com.conant.order.web.controller.BatchCommandController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="batchModifyView" value="Sales_EditOrders" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+		<property name="methodNameResolver" ref="paramResolver"/>
+	</bean>
+	
+	<bean id="salesExportOrdersController" class="com.conant.order.web.controller.SalesExportOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="orderQuerier" />
+		<property name="formView" value="Sales_ExportOrders" />
+		<property name="successView" value="" />
+		<property name="errorView" value="common/err" />
+		<property name="paramPrefix" value="sales" />
+		<property name="returnUrl" value="/salesOrders.ord" />
+	</bean>
+	
+	<bean id="produceQueryOrdersController"
+		class="com.conant.order.web.controller.ProduceQueryOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="orderQuerier" />
+		<property name="formView" value="Produce_QueryOrders" />
+		<property name="successView" value="Produce_QueryOrders" />
+		<property name="errorView" value="common/err" />
+		<property name="pageSize" value="100" />
+		<property name="returnUrl" value="/produceOrders.ord" />
+		<property name="paramPrefix" value="produce" />
+	</bean>
+
+	<bean id="produceViewOrderController" class="com.conant.order.web.controller.ViewOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Produce_ViewOrder" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/produceOrders.ord" />
+	</bean>
+	
+	<bean id="producePrintOrderController" class="com.conant.order.web.controller.ProducePrintOrderController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Produce_PrintOrder" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/produceOrders.ord" />
+	</bean>
+
+	<bean id="producePrintOrdersController" class="com.conant.order.web.controller.ProducePrintOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="printOrder" />
+		<property name="successView" value="Produce_PrintOrders" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/produceOrders.ord" />
+	</bean>
+	
+	<bean id="producePackingPrintController" class="com.conant.order.web.controller.ProducePackingPrintController">
+	    <property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="order" />
+		<property name="formView" value="Produce_PackingPrint" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/produceOrders.ord" />
+	</bean>
+	
+	<bean id="produceBatchCommandController" class="com.conant.order.web.controller.BatchCommandController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="successView" value="common/ok" />
+		<property name="errorView" value="common/err" />
+		<property name="batchPrintView" value="Produce_PrintOrders" />
+		<property name="batchPackingPrintView" value="Produce_PackingPrints"/>
+		<property name="returnUrl" value="/produceOrders.ord" />
+		<property name="methodNameResolver" ref="paramResolver"/>
+	</bean>
+	
+	<bean id="producePrintCounterController" class="com.conant.order.web.controller.ProducePrintCounterController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="successView" value="Produce_PrintOrders" />
+		<property name="errorView" value="common/err" />
+		<property name="returnUrl" value="/produceOrders.ord" />
+	</bean>	
+	
+	<bean id="produceExportOrdersController" class="com.conant.order.web.controller.ProduceExportOrdersController">
+		<property name="onlineOrder" ref="onlineOrder" />
+		<property name="commandName" value="orderQuerier" />
+		<property name="formView" value="Produce_ExportOrders" />
+		<property name="successView" value="" />
+		<property name="errorView" value="common/err" />
+		<property name="paramPrefix" value="produce" />
+		<property name="returnUrl" value="/produceOrders.ord" />
+	</bean>
+		
+	<bean id="lensOrderValidator" class="com.conant.order.web.validator.LensOrderValidator">
+		<property name="minWorkdays" value="3"/>
+	</bean>
+
+	<bean id="frameLensOrderValidator" class="com.conant.order.web.validator.FrameLensOrderValidator">
+		<property name="minSphere" value="-24.0"/>
+		<property name="maxSphere" value="20.0"/>
+		<property name="minCylinder" value="-20.0"/>
+		<property name="maxCylinder" value="20.0"/>
+		<property name="minAxis" value="0"/>
+		<property name="maxAxis" value="180"/>
+		<property name="minPrism" value="-2.0"/>
+		<property name="maxPrism" value="2.0"/>
+	</bean>
+	
+	<bean id="freeFormOrderValidator" class="com.conant.order.web.validator.FreeFormOrderValidator">
+		<property name="minSphere" value="-20.0"/>
+		<property name="maxSphere" value="20.0"/>
+		<property name="minCylinder" value="-20.0"/>
+		<property name="maxCylinder" value="20.0"/>
+		<property name="minAxis" value="0"/>
+		<property name="maxAxis" value="180"/>
+		<property name="minPrism" value="-2.0"/>
+		<property name="maxPrism" value="2.0"/>
+	</bean>	
+	
+	<bean id="onlineOrder" class="com.conant.order.dao.hibernate.OnlineOrderImpl">
+		<property name="orderDao" ref="orderDao"/>
+		<property name="lensModelDao" ref="lensModelDao"/>
+		<property name="processInstanceDao" ref="processInstanceDao"/>
+		<property name="nodeInstanceDao" ref="nodeInstanceDao"/>
+		<property name="processLogDao" ref="processLogDao"/>
+		<property name="tintColorDao" ref="tintColorDao"/>
+		<property name="lensMaterialDao" ref="lensMaterialDao"/>
+		<property name="lensTypeDao" ref="lensTypeDao"/>
+		<property name="lensDesignDao" ref="lensDesignDao"/>
+		<property name="lensChannelDao" ref="lensChannelDao"/>
+		<property name="tintTypeDao" ref="tintTypeDao"/>
+		<property name="tokenVariableDao" ref="tokenVariableDao"/>
+	</bean>
+	
+	<bean id="orderDao" class="com.conant.order.dao.hibernate.OrderDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+
+	<bean id="lensModelDao" class="com.conant.order.dao.hibernate.LensModelDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+
+	<bean id="processInstanceDao" class="com.conant.order.dao.hibernate.ProcessInstanceDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	
+	<bean id="nodeInstanceDao" class="com.conant.order.dao.hibernate.NodeInstanceDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	
+	<bean id="processLogDao" class="com.conant.order.dao.hibernate.ProcessLogDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>	
+	
+	<bean id="tintColorDao" class="com.conant.order.dao.hibernate.TintColorDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	
+	<bean id="lensMaterialDao" class="com.conant.order.dao.hibernate.LensMaterialDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+
+	<bean id="lensTypeDao" class="com.conant.order.dao.hibernate.LensTypeDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	
+	<bean id="lensDesignDao" class="com.conant.order.dao.hibernate.LensDesignDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	
+	<bean id="lensChannelDao" class="com.conant.order.dao.hibernate.LensChannelDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>		
+
+	<bean id="tintTypeDao" class="com.conant.order.dao.hibernate.TintTypeDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+	
+	<bean id="tokenVariableDao" class="com.conant.order.dao.hibernate.TokenVariableDaoImpl">
+		<property name="template">
+			<ref bean="hibernateTemplate" />
+		</property>
+	</bean>
+		
+	<!-- modify by agang end -->
+
+</beans>
